@@ -2,6 +2,7 @@ from threading import Thread
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
+from tkinter import ttk
 
 from downloader import baixar_audio_mp3
 
@@ -36,6 +37,7 @@ def criar_interface():
     caminho_entry = tk.Entry(interface, width=largura_entrada, textvariable=caminho_destino_var, font=("Arial", 10))
     caminho_entry.pack(pady=5, padx=20)
 
+    # Label de Status (Usada para exibir a porcentagem)
     status_label = tk.Label(interface, text="Pronto para download.", font=("Arial", 10))
     status_label.pack(pady=padding_y)
 
@@ -68,9 +70,11 @@ def iniciar_download_thread(interface_principal, url_entry, status_label, caminh
         messagebox.showwarning("Aviso", "Por favor, selecione uma pasta de destino.")
         return
 
-    def update_status(message, is_error=False):
+    def update_status(message, percent=0, is_error=False):
         """Função para atualizar a label de status na thread principal da interface."""
+
         status_label.config(text=message, fg='red' if is_error else 'black')
+
         interface_principal.update()
 
     # Criar e iniciar uma nova thread para o download
