@@ -2,9 +2,9 @@ import platform
 import yt_dlp
 import os
 
-# Prompt: yt-dlp -i --extract-audio --audio-format mp3 --audio-quality 0 --yes-playlist [URL] -o "%(title)s.%(ext)s"
+# Prompt inicial: yt-dlp -i --extract-audio --audio-format mp3 --audio-quality 0 --yes-playlist [URL] -o "%(title)s.%(ext)s"
 
-def baixar_audio_mp3(url, status_callback):
+def baixar_audio_mp3(url, status_callback, pasta_destino):
 
     # Configuração para o caminho do ffmpeg
     ffmpeg_executavel = 'ffmpeg.exe' if platform.system() == 'Windows' else 'ffmpeg'
@@ -34,12 +34,14 @@ def baixar_audio_mp3(url, status_callback):
         'outtmpl': os.path.join(os.getcwd(), '%(title)s.%(ext)s'),
         # Caminho para a utilização do ffmpeg
         'ffmpeg_location': ffmpeg_dir,
+        # Caminho da pasta de destino dos downloads
+        'outtmpl': os.path.join(pasta_destino, '%(title)s.%(ext)s'),
 
         # Progress hook para enviar status de volta
         'progress_hooks': [lambda d: status_callback(d['status'])],
     }
 
-    status_callback(f"Iniciando download. Usando FFmpeg de: {ffmpeg_dir}")
+    status_callback(f"Iniciando download. Destino: {pasta_destino}")
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
